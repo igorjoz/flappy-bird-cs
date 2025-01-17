@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace FlappyBird
 {
     public class Game
     {
+        private Bird bird;
         private GameStatus gameStatus;
         private const int screenWidth = 800;
         private const int screenHeight = 600;
-        private float gravity = 0.5f;
+        private float gravity = 0.3f;
         private int countdown = 3;
         private float countdownTimer = 0f;
         private int score = 0;
@@ -21,6 +23,8 @@ namespace FlappyBird
         {
             Raylib.InitWindow(screenWidth, screenHeight, "Flappy pigeon");
             Raylib.SetTargetFPS(144);
+
+            bird = new Bird(new Vector2(screenWidth / 4, screenHeight / 2), gravity);
 
             gameStatus = GameStatus.Ready;
             countdown = 3;
@@ -45,6 +49,20 @@ namespace FlappyBird
                     gameStatus = GameStatus.Playing;
                 }
             }
+            else if (gameStatus == GameStatus.Playing)
+            {
+                bird.Update();
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Space))
+                {
+                    bird.Flap();
+                }
+
+                if (bird.CheckCollisionWithGround(screenHeight))
+                {
+                    gameStatus = GameStatus.GameOver;
+                }
+            }
         }
 
         public void Draw()
@@ -58,6 +76,8 @@ namespace FlappyBird
             }
             else
             {
+                bird.Draw();
+
                 if (gameStatus == GameStatus.GameOver)
                 {
                     Raylib.DrawText("Game Over", screenWidth / 2 - 160, screenHeight / 2 - 50, 70, Raylib_cs.Color.Red);
