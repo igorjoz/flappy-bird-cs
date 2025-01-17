@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Raylib_cs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -40,6 +41,31 @@ namespace FlappyBird
                 position.Y = 0;
                 velocity.Y = 0;
             }
+        }
+
+        public void Flap()
+        {
+            velocity.Y = flapStrength;
+        }
+        public void Draw()
+        {
+            Raylib.DrawCircleV(position, size, Color.Yellow);
+        }
+        public bool CheckCollisionWithGround(int screenHeight)
+        {
+            return position.Y + size > screenHeight;
+        }
+
+        public bool CheckCollisionWithPipes(List<Pipe> pipes)
+        {
+            foreach (var pipe in pipes)
+            {
+                if (pipe.CheckCollision(position))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
