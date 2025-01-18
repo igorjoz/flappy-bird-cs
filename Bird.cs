@@ -57,5 +57,17 @@ namespace FlappyBird
         {
             return position.Y + size > screenHeight;
         }
+
+        public bool CheckCollisionWithPipes(List<Pipe> pipes)
+        {
+            foreach (var pipe in pipes)
+            {
+                if (pipe.CheckCollision(position))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
