@@ -11,6 +11,7 @@ namespace FlappyBird
     public class Game
     {
         private Bird bird;
+        private PipeManager pipeManager;
         private GameStatus gameStatus;
         private const int screenWidth = 800;
         private const int screenHeight = 600;
@@ -25,6 +26,7 @@ namespace FlappyBird
             Raylib.SetTargetFPS(144);
 
             bird = new Bird(new Vector2(screenWidth / 4, screenHeight / 2), gravity);
+            pipeManager = new PipeManager(screenWidth, screenHeight);
 
             gameStatus = GameStatus.Ready;
             countdown = 3;
@@ -58,9 +60,19 @@ namespace FlappyBird
                     bird.Flap();
                 }
 
-                if (bird.CheckCollisionWithGround(screenHeight))
+                score = pipeManager.addPoint(score);
+                pipeManager.Update();
+
+                if (bird.CheckCollisionWithGround(screenHeight) || bird.CheckCollisionWithPipes(pipeManager.Pipes))
                 {
                     gameStatus = GameStatus.GameOver;
+                }
+            }
+            else
+            {
+                if (Raylib.IsKeyPressed(KeyboardKey.Enter))
+                {
+                    Initialize();
                 }
             }
         }
@@ -77,6 +89,7 @@ namespace FlappyBird
             else
             {
                 bird.Draw();
+                pipeManager.Draw();
 
                 if (gameStatus == GameStatus.GameOver)
                 {
